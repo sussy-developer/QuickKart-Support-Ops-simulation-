@@ -1,0 +1,407 @@
+:root {
+  --bg-1: #fef8ef;
+  --bg-2: #eef4ff;
+  --panel: #ffffffd9;
+  --ink: #132336;
+  --muted: #506072;
+  --line: #dbe3ea;
+  --brand: #1467d8;
+  --brand-2: #1f9c8f;
+  --warn: #c54f2a;
+  --ok: #157347;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: Outfit, sans-serif;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 10% 0%, #ffe8c9 0%, transparent 35%),
+    radial-gradient(circle at 90% 20%, #d8e9ff 0%, transparent 45%),
+    linear-gradient(150deg, var(--bg-1) 0%, var(--bg-2) 100%);
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.eyebrow {
+  display: inline-block;
+  margin: 0 0 0.5rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12rem;
+  border: 1px solid #98c3f4;
+  background: #edf5ff;
+  color: #184a85;
+  border-radius: 999px;
+  padding: 0.26rem 0.6rem;
+}
+
+.subtitle {
+  margin: 0.4rem 0 0;
+  color: var(--muted);
+  max-width: 70ch;
+}
+
+.login-shell,
+.app-shell {
+  width: min(1240px, 94vw);
+  margin: 2.2rem auto;
+}
+
+.login-card,
+.panel,
+.kpi-card {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--panel);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 18px 35px #1a2f4012;
+}
+
+.login-card {
+  max-width: 480px;
+  margin: 8vh auto;
+  padding: 1.25rem;
+}
+
+.login-form {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  padding: 0.58rem 0.68rem;
+  background: #fff;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.btn {
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  padding: 0.58rem 0.74rem;
+  background: #fff;
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px #143b680f;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn.primary {
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(120deg, var(--brand) 0%, #5f96eb 100%);
+}
+
+.btn.ghost {
+  background: #f5fbfa;
+  border-color: #bee4df;
+  color: #0f6b62;
+}
+
+.btn.danger {
+  background: #fff3ef;
+  border-color: #f0c5b8;
+  color: var(--warn);
+}
+
+.btn.success {
+  background: #f0fff5;
+  border-color: #b8e4c9;
+  color: var(--ok);
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.topbar-actions {
+  min-width: 320px;
+  display: grid;
+  gap: 0.55rem;
+  align-content: start;
+}
+
+.welcome {
+  font-weight: 700;
+  color: #1f3a55;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.95rem;
+}
+
+.kpi-card {
+  padding: 0.75rem;
+}
+
+.kpi-card h3 {
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+.kpi-card p {
+  margin: 0.4rem 0 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.workspace-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1.3fr 1fr;
+  gap: 0.75rem;
+}
+
+.panel {
+  padding: 0.9rem;
+}
+
+.panel h2 {
+  font-size: 1rem;
+  margin-bottom: 0.7rem;
+}
+
+.ticket-list {
+  max-height: 520px;
+  overflow: auto;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.ticket-row {
+  border: 1px solid #d9e3ed;
+  background: #fff;
+  border-radius: 0.75rem;
+  text-align: left;
+  padding: 0.55rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.ticket-row p {
+  margin: 0.2rem 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.ticket-row.active {
+  border-color: #78aae8;
+  background: #eef5ff;
+}
+
+.ticket-meta {
+  display: grid;
+  gap: 0.35rem;
+  justify-items: end;
+}
+
+.badge {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03rem;
+  border-radius: 999px;
+  padding: 0.14rem 0.45rem;
+  font-weight: 700;
+}
+
+.badge.urgent,
+.badge.high {
+  background: #ffe5dc;
+  color: #9e2f08;
+}
+
+.badge.medium,
+.badge.low {
+  background: #edf3ff;
+  color: #24539b;
+}
+
+.badge[class*="status-"] {
+  background: #f0f7f5;
+  color: #1c695a;
+}
+
+.badge.reopened {
+  background: #fff2d8;
+  color: #8a5605;
+}
+
+.conversation-panel {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.ticket-header p {
+  margin: 0.28rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.conversation-feed {
+  display: grid;
+  gap: 0.5rem;
+  max-height: 430px;
+  overflow: auto;
+}
+
+.chat-turn {
+  border-radius: 0.7rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid #d8e5ef;
+  background: #fff;
+}
+
+.chat-turn span {
+  display: block;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06rem;
+  color: var(--muted);
+  margin-bottom: 0.2rem;
+}
+
+.chat-turn p {
+  margin: 0;
+}
+
+.chat-turn.agent {
+  background: #edf6ff;
+  border-color: #cfe1f6;
+}
+
+.chat-turn.system {
+  background: #f1fff7;
+  border-color: #d0ebdd;
+}
+
+.actions-panel {
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+}
+
+.bottom-grid {
+  margin-top: 0.8rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.event-log {
+  max-height: 220px;
+  overflow: auto;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.event-log p {
+  margin: 0;
+  padding: 0.38rem 0.45rem;
+  border: 1px solid #dae4eb;
+  border-radius: 0.6rem;
+  background: #fff;
+  font-size: 0.84rem;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.result-box {
+  border: 1px solid #cee1f5;
+  background: #edf4ff;
+  border-radius: 0.75rem;
+  padding: 0.6rem;
+}
+
+pre {
+  margin: 0;
+  white-space: pre-wrap;
+  font-size: 0.78rem;
+}
+
+.highlight {
+  color: #0f6b62;
+  font-weight: 700;
+}
+
+.error-text {
+  color: #9e2f08;
+  font-weight: 700;
+}
+
+@media (max-width: 1120px) {
+  .kpi-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .workspace-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bottom-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .topbar {
+    flex-direction: column;
+  }
+
+  .topbar-actions {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
