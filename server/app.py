@@ -3,6 +3,7 @@ from __future__ import annotations
 import threading
 import uuid
 from pathlib import Path
+from typing import Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -63,10 +64,18 @@ def login(payload: LoginRequest) -> LoginResponse:
 
 
 @app.post("/reset", response_model=StepResult)
-def reset(payload: ResetRequest) -> StepResult:
+def reset(payload: Optional[ResetRequest] = None) -> StepResult:
     with _env_lock:
-        obs = _env.reset(task_id=payload.task_id, seed=payload.seed)
-        return StepResult(observation=obs, reward=0.0, done=False, info={"episode_id": _env.episode_id})
+        task_id = payload.task_id if payload else "easy"
+        seed = payload.seed if payload else None
+
+        obs = _env.reset(task_id=task_id, seed=seed)
+        return StepResult(
+            observation=obs,
+            reward=0.0,
+            done=False,
+            info={"episode_id": _env.episode_id},
+        )
 
 
 @app.post("/step", response_model=StepResult)
