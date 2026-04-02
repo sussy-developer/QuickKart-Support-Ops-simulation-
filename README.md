@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # QuickKart‑Support‑Ops
 
 **QuickKart‑Support‑Ops** is a realistic OpenEnv simulation of an e‑commerce customer‑support operations center. It mimics a production‑grade support floor with tiered ticket routing, SLA pressure, knowledge‑base consultation, escalation discipline, and shift‑handoff debt. The environment is built to train, evaluate, and benchmark AI agents (including LLM‑based policies) on real‑world support KPIs.
