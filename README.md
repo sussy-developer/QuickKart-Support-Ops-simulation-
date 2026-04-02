@@ -1,7 +1,10 @@
 
 # QuickKart‑Support‑Ops
 
-**QuickKart‑Support‑Ops** is a realistic OpenEnv simulation of an e‑commerce customer‑support operations center. It mimics a production‑grade support floor with tiered ticket routing, SLA pressure, knowledge‑base consultation, escalation discipline, and shift‑handoff debt. The environment is built to train, evaluate, and benchmark AI agents (including LLM‑based policies) on real‑world support KPIs.
+## 🛒 QuickKart SupportOps OpenEnv
+
+A real-world OpenEnv environment for training and evaluating agents on customer-support operations.
+This is not a toy system — it is designed to replicate a production-grade support floor, including real operational constraints, decision trade-offs, and system pressure.
 
 ---
 
@@ -10,6 +13,55 @@
 - **Provide a unified UI** – a premium React dashboard with glass‑morphism styling, showing tickets, KPIs, and action panels.
 - **Automated grading** – scores agents on response time, resolution speed, First‑Contact‑Resolution (FCR), CSAT, priority fairness, and escalation quality.
 - **Baseline comparison** – a built‑in heuristic/OpenAI baseline for quick sanity checks.
+
+---
+
+## 🚀 Project Purpose
+
+QuickKart SupportOps OpenEnv is built to:
+- Train AI agents for real customer support workflows
+- Simulate production-level support environments
+- Evaluate decisions under SLA pressure & queue dynamics
+- Benchmark agents using deterministic grading metrics
+
+---
+
+## 🧠 Key Features
+
+- 🎯 Tiered ticket routing (Tier-1 → Tier-2 → Tier-3)
+- ⏱ SLA pressure & queue aging
+- 📚 Knowledge-base consultation
+- ⚠️ Escalation discipline & penalties
+- 🔁 Ticket reopen risk
+- 🔄 Shift handoff quality debt
+- 🚧 Tier-capacity bottlenecks
+- 🌍 Multi-region incident simulation (Hard mode)
+
+---
+
+## 🏗️ Core Components
+- Environment Engine → **support_env.py**
+- Data Models → **models.py**
+- API Layer → **FastAPI**
+- Frontend UI → **React (served via FastAPI)**
+- Baseline Agent → **baseline.py**
+
+---
+
+## 🛠️ Project Structure
+```
+Meta‑ai/
+├─ server/               # FastAPI backend
+│   ├─ app.py            # Entry point
+│   └─ static/           # React UI (app.jsx, styles.css, signin.jsx, …)
+├─ models.py             # Pydantic schemas
+├─ support_env.py        # Core OpenEnv logic
+├─ baseline.py           # Baseline inference
+├─ requirements.txt      # Python deps
+├─ Dockerfile            # Container definition
+└─ README.md             # ← This file
+```
+
 
 ---
 
@@ -57,6 +109,47 @@
 | **Delete Logs / Scores** | Bottom panels | Clears event log or baseline scores. |
 
 ---
+
+## 🔁 Core Workflow
+
+                 [ Reset Environment ]
+                          |
+                          v
+                 [ Receive Tickets ]
+                          |
+                          v
+                  [ Select Ticket ]
+                          |
+                          v
+                 [ Classify Ticket ]
+                          |
+                          v
+           [ Consult Knowledge Base ]
+                          |
+                          v
+                    [ Take Action ]
+                    /      |      \
+                   /       |       \
+                  v        v        v
+           [ Respond ] [ Escalate ] [ Defer ]
+                |           |           |
+                v           v           v
+        [ Resolve Ticket ] [ Tier 2/3 Queue ] [ Backlog Queue ]
+                |           |           |
+                v           v           v
+         [ Close Ticket ] [ Capacity Check ] [ Queue Aging ]
+                \           |           /
+                 \          |          /
+                  \         |         /
+                   v        v        v
+                 [   Grader Evaluation   ]
+
+
+---
+
+
+
+
 
 ## 📈 Workflow Diagram (ASCII/Dotted Text)
 ```
@@ -130,28 +223,140 @@ Visit `http://localhost:8000` to see the UI.
 
 ---
 
-## 🛠️ Project Structure
+## 🎮 OpenEnv Interface
 ```
-Meta‑ai/
-├─ server/               # FastAPI backend
-│   ├─ app.py            # Entry point
-│   └─ static/           # React UI (app.jsx, styles.css, signin.jsx, …)
-├─ models.py             # Pydantic schemas
-├─ support_env.py        # Core OpenEnv logic
-├─ baseline.py           # Baseline inference
-├─ requirements.txt      # Python deps
-├─ Dockerfile            # Container definition
-└─ README.md             # ← This file
+Core Loop
+POST /reset
+POST /step
+GET /state
+```
+## Additional Endpoints
+```
+GET /tasks
+POST /grader
+POST /baseline
+```
+## App-Facing Endpoints
+```
+POST /auth/login
+GET /tickets
+GET /ticket/{ticket_id}
+GET /knowledge-base
+GET /kpis
+```
+---
+
+
+### 🎯 Task Levels
+
+| Difficulty | Description |
+| :--- | :--- |
+| 🟢 Easy | Tier-1 consumer issues (shipping, billing, account) |
+| 🟡 Medium | Mixed queues + selective Tier-2 escalation |
+| 🔴 Hard | Multi-region incidents, outages, strict SLAs |
+
+
+Each task includes deterministic scenarios + deterministic grading.
+
+---
+
+# 🏆 Reward Design
+## Positive Rewards
+- Good reply → +0.2
+- Correct solution → +0.5
+- Close successfully → +1.0
+- 
+## Penalties
+- Delay / wrong action → -0.1
+- Escalation → -0.3
+  
+## Realism-Based Penalties
+- Queue pressure (backlog)
+- Shift handoff quality issues
+- Tier-capacity overflow
+- Ticket reopen risk
+
+
+---
+
+
+## 🤖 Baseline Inference
+```
+Baseline script: baseline.py
+```
+
+## Modes
+```
+OpenAI Mode → Activated if OPENAI_API_KEY is set
+Heuristic Mode → Fallback if API key is unavailable or request fails
+```
+---
+
+## ▶️ Run
+```
+python baseline.py
 ```
 
 ---
 
-## 🤝 Contributing
-Feel free to open issues or pull requests. Contributions that add new tasks, improve UI aesthetics, or enhance the grading metrics are especially welcome.
+## 🔧 Optional Environment Variables
+```
+OPENAI_API_KEY
+OPENAI_BASELINE_MODEL=gpt-4.1-mini
+OPENAI_BASELINE_TIMEOUT
+OPENAI_BASE_URL
+```
 
 ---
 
-*Happy hacking!*
-=======
-# QuickKart-Support-Ops-simulation-
->>>>>>> d782de0e5427430b50e6f756dbb7912d66f17ef1
+## ⚙️ Setup
+Install dependencies and start the server:
+
+```
+pip install -r requirements.txt
+python -m uvicorn server.app:app --host 0.0.0.0 --port 8000
+```
+---
+
+## 🌐 Open in Browser
+```
+http://localhost:8000
+http://localhost:8000/docs
+```
+
+--- 
+
+## 🧪 Tests
+
+Run test suite:
+
+```
+python -m pytest -q tests -p no:cacheprovider
+```
+
+---
+
+## ✅ Validation
+ Validate your submission:
+```
+python scripts/validate_submission.py
+```
+
+
+## 🐳 Docker
+Build and run using Docker:
+
+```
+docker build -t openenv-customer-support .
+docker run --rm -p 8000:8000 openenv-customer-support
+```
+
+🤗 Hugging Face Space
+
+This repository is Docker-ready and can be deployed directly using:
+```
+openenv.yaml
+Dockerfile
+```
+
+---
