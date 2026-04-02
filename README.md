@@ -1,162 +1,153 @@
-# QuickKart SupportOps OpenEnv
+# QuickKart‑Support‑Ops
 
-This repository is a **real-world OpenEnv environment** for training and evaluating agents on customer-support operations.
+**QuickKart‑Support‑Ops** is a realistic OpenEnv simulation of an e‑commerce customer‑support operations center. It mimics a production‑grade support floor with tiered ticket routing, SLA pressure, knowledge‑base consultation, escalation discipline, and shift‑handoff debt. The environment is built to train, evaluate, and benchmark AI agents (including LLM‑based policies) on real‑world support KPIs.
 
-It is intentionally built like a production support floor, not a toy:
-- tiered ticket routing (Tier-1 -> Tier-2 -> Tier-3)
-- SLA pressure and queue aging
-- knowledge-base consultation
-- escalation discipline
-- ticket reopen risk
-- shift-handoff quality debt
-- tier-capacity bottlenecks
+---
 
-## Why this is not a template clone
+## 🎯 Main Purpose
+- **Simulate authentic support workflows** – from simple Tier‑1 queries to complex multi‑region incidents.
+- **Provide a unified UI** – a premium React dashboard with glass‑morphism styling, showing tickets, KPIs, and action panels.
+- **Automated grading** – scores agents on response time, resolution speed, First‑Contact‑Resolution (FCR), CSAT, priority fairness, and escalation quality.
+- **Baseline comparison** – a built‑in heuristic/OpenAI baseline for quick sanity checks.
 
-I modeled this after realistic e-commerce operations patterns (UPI disputes, courier delays, SSO incidents, incident bridge failures, COD reconciliation). The hard task includes multi-region incident traffic and constrained specialist capacity.
+---
 
-## OpenEnv Interface
-
-Core loop is standard and typed:
-- `POST /reset`
-- `POST /step`
-- `GET /state`
-
-Pydantic models are defined in [models.py](C:\Users\biswa\OneDrive\Documents\Playground\models.py).
-
-Environment logic is in [support_env.py](C:\Users\biswa\OneDrive\Documents\Playground\support_env.py).
-
-## Tasks (easy -> medium -> hard)
-
-1. `easy`: Tier-1 daily consumer queue (shipping, billing, account)
-2. `medium`: mixed partner + consumer queue with selective Tier-2 escalation
-3. `hard`: multi-region incident day, overlapping outages, finance control issues, strict SLAs
-
-Each task has deterministic scenarios and deterministic grading criteria.
-
-## Action Space
-
-`SupportAction.action_type`:
-- `select_ticket`
-- `classify_ticket`
-- `consult_kb`
-- `respond`
-- `escalate`
-- `close_ticket`
-- `defer`
-
-## Reward Design
-
-Primary shaping (requested):
-- Good reply: `+0.2`
-- Correct solution: `+0.5`
-- Close successfully: `+1.0`
-- Delay / wrong action: `-0.1`
-- Escalation: `-0.3`
-
-Additional shaping for realism:
-- queue pressure penalty while backlog remains
-- shift handoff penalty for unresolved notes
-- tier-capacity overflow penalty for escalated queues
-- reopen penalty when weak closure quality causes regression
-
-## Grader Design (`0.0-1.0`)
-
-Final score blends:
-- resolution rate
-- first-response quality
-- resolution-time quality
-- first-contact resolution
-- CSAT normalization
-- escalation quality
-- priority fairness
-- reopen control
-
-Extra grader/KPI signals:
-- `priority_fairness`
-- `unnecessary_escalation_rate`
-- `reopen_rate`
-- `tier_queue_pressure`
-
-## Additional Required Endpoints
-
-- `GET /tasks`
-- `POST /grader`
-- `POST /baseline`
-
-And app-facing endpoints:
-- `POST /auth/login`
-- `GET /tickets`
-- `GET /ticket/{ticket_id}`
-- `GET /knowledge-base`
-- `GET /kpis`
-
-## Baseline Inference
-
-Baseline script: [baseline.py](C:\Users\biswa\OneDrive\Documents\Playground\baseline.py)
-
-Modes:
-- **OpenAI mode** if `OPENAI_API_KEY` is set (uses Chat Completions at temperature 0)
-- **Heuristic fallback** if no key is available or API call fails
-
-Run:
-
-```bash
-python baseline.py
+## 🖥️ UI Overview
 ```
++---------------------------+   +---------------------------+
+|  QuickKart Operations     |   |  Top‑bar (Dashboard)      |
+|  Center Logo + Motto      |   |  - User name & role       |
+|  "Login to dashboard …"   |   |  - Task selector          |
++---------------------------+   +---------------------------+
+|  Login Card (centered)    |
+|  • Email input            |
+|  • Password input         |
+|  • "Forgot password?"    |
+|  • Login button (center)  |
++---------------------------+
+|  Floating shapes (Cube,   |
+|  Capsule, Flower)         |
++---------------------------+
+|  Main App (after login)   |
+|  • KPI grid               |
+|  • Ticket list            |
+|  • Conversation panel    |
+|  • Action panel (classify,|
+|    consult KB, respond,   |
+|    escalate, close)       |
+|  • Event log & baseline   |
++---------------------------+
+```
+*The login page uses a **centered card** with the logo and motto in the top‑left corner. The “Forgot password?” link sits just above the login button.*
 
-Optional env vars:
-- `OPENAI_API_KEY`
-- `OPENAI_BASELINE_MODEL` (default `gpt-4.1-mini`)
-- `OPENAI_BASELINE_TIMEOUT`
-- `OPENAI_BASE_URL`
+---
 
-## Frontend App (login -> result)
+## 🔘 Button Functions
+| Button | Location | Action |
+|--------|----------|--------|
+| **Log In** | Login card | Submits credentials, creates `auth` session, then calls `bootstrapAfterLogin()` to load tasks & KB. |
+| **Reset Episode** | Top‑bar | Calls `resetEpisode(selectedTask)` – re‑initialises the environment for the chosen task. |
+| **Run Baseline** | Top‑bar | Executes `/baseline` endpoint, displays average score for reference. |
+| **Classify Ticket** | Action panel | Sends `classify_ticket` with selected category. |
+| **Consult KB** | Action panel | Sends `consult_kb` with chosen knowledge‑base article. |
+| **Respond** | Action panel | Sends `respond` with selected response template and custom text. |
+| **Escalate** | Action panel | Sends `escalate` to move ticket to Tier‑2/3. |
+| **Close Ticket** | Action panel | Sends `close_ticket` to finalize the ticket. |
+| **Delete Logs / Scores** | Bottom panels | Clears event log or baseline scores. |
 
-React UI is served by FastAPI and provides:
-- login page
-- ticket dashboard
-- conversation workspace
-- action panel
-- live KPI cards
-- final grader output
-- baseline comparison output
+---
 
-Files:
-- [server/static/index.html](C:\Users\biswa\OneDrive\Documents\Playground\server\static\index.html)
-- [server/static/app.jsx](C:\Users\biswa\OneDrive\Documents\Playground\server\static\app.jsx)
-- [server/static/styles.css](C:\Users\biswa\OneDrive\Documents\Playground\server\static\styles.css)
+## 📈 Workflow Diagram (ASCII/Dotted Text)
+```
++-------------------+      +-------------------+      +-------------------+
+|   User opens      | ---> |   Login Page      | ---> |   Authenticated   |
+|   https://...     |      |   (email, pwd)    |      |   Dashboard       |
++-------------------+      +-------------------+      +-------------------+
+        |                         |                         |
+        |                         v                         v
+        |                +-------------------+   +-------------------+
+        |                |   Click Log In    |   |   Invalid login   |
+        |                +-------------------+   +-------------------+
+        |                         |                         |
+        v                         v                         |
++-------------------+   +-------------------+               |
+|   Load Tasks &    |   |   Show error      | <-------------+
+|   Knowledge‑Base  |   +-------------------+               |
++-------------------+                                         
+        |                                                     
+        v                                                     
++-------------------+      +-------------------+      +-------------------+
+|   Select Task     | ---> |   Reset Episode   | ---> |   Observe State   |
++-------------------+      +-------------------+      +-------------------+
+        |                         |                         |
+        v                         v                         v
++-------------------+   +-------------------+   +-------------------+
+|   Ticket List     |   |   Action Panel    |   |   KPI Grid        |
+|   (select ticket) |   |   (classify,      |   |   (metrics)       |
+|                   |   |    consult, ...) |   |                   |
++-------------------+   +-------------------+   +-------------------+
+        |                         |                         |
+        v                         v                         v
++-------------------+   +-------------------+   +-------------------+
+|   Conversation    |   |   Send Action     |   |   Update KPIs     |
+|   Panel (chat)    |   |   (API call)      |   |   (live)          |
++-------------------+   +-------------------+   +-------------------+
+        |                         |                         |
+        v                         v                         v
++-------------------+   +-------------------+   +-------------------+
+|   Episode Done?   |<--|   Receive Reward  |<--|   Grader (final)  |
++-------------------+   +-------------------+   +-------------------+
+        |
+        v
++-------------------+
+|   Show Grader     |
+|   Score & Summary |
++-------------------+
+```
+*The diagram shows the high‑level flow from login → task selection → ticket handling → grading.*
 
-## Setup
+---
 
+## 📦 Running Locally
 ```bash
+# Install dependencies (already in Dockerfile)
+python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-python -m uvicorn server.app:app --host 0.0.0.0 --port 8000
+
+# Start the FastAPI server
+uvicorn server.app:app --host 0.0.0.0 --port 8000
+```
+Visit `http://localhost:8000` to see the UI.
+
+---
+
+## 🚀 Deploy to Hugging Face Spaces (Docker)
+1. Create a new **Docker** Space on Hugging Face.
+2. Clone the empty repo, copy this project, commit, and push.
+3. Add any needed secrets (e.g., `OPENAI_API_KEY`).
+4. Hugging Face will automatically build the Dockerfile and expose port 8000.
+
+---
+
+## 🛠️ Project Structure
+```
+Meta‑ai/
+├─ server/               # FastAPI backend
+│   ├─ app.py            # Entry point
+│   └─ static/           # React UI (app.jsx, styles.css, signin.jsx, …)
+├─ models.py             # Pydantic schemas
+├─ support_env.py        # Core OpenEnv logic
+├─ baseline.py           # Baseline inference
+├─ requirements.txt      # Python deps
+├─ Dockerfile            # Container definition
+└─ README.md             # ← This file
 ```
 
-Open:
-- `http://localhost:8000`
-- `http://localhost:8000/docs`
+---
 
-## Tests
+## 🤝 Contributing
+Feel free to open issues or pull requests. Contributions that add new tasks, improve UI aesthetics, or enhance the grading metrics are especially welcome.
 
-```bash
-python -m pytest -q tests -p no:cacheprovider
-```
+---
 
-## Validation
-
-```bash
-python scripts/validate_submission.py
-```
-
-## Docker
-
-```bash
-docker build -t openenv-customer-support .
-docker run --rm -p 8000:8000 openenv-customer-support
-```
-
-## Hugging Face Space
-
-Repo is Docker-space ready with [openenv.yaml](C:\Users\biswa\OneDrive\Documents\Playground\openenv.yaml) + [Dockerfile](C:\Users\biswa\OneDrive\Documents\Playground\Dockerfile).
+*Happy hacking!*

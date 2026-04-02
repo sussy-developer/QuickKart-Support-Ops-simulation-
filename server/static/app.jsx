@@ -33,6 +33,36 @@ const api = {
   },
 };
 
+function Cube() {
+  return (
+    <svg className="svg-cube" width="220" height="220" viewBox="0 0 100 100">
+      <polygon points="50,5 95,28 50,50 5,28"  fill="#6b8fff"/>
+      <polygon points="5,28 50,50 50,95 5,72"   fill="#3a50d9"/>
+      <polygon points="95,28 50,50 50,95 95,72" fill="#2a3fc0"/>
+    </svg>
+  );
+}
+
+function Capsule() {
+  return (
+    <svg className="svg-capsule" width="130" height="130" viewBox="0 0 60 96">
+      <rect x="10" y="10" width="40" height="76" rx="20" ry="20" fill="#1a1a1a"/>
+    </svg>
+  );
+}
+
+function Flower() {
+  return (
+    <svg className="svg-flower" width="120" height="120" viewBox="0 0 80 80">
+      <ellipse cx="40" cy="22" rx="12" ry="18" fill="#c0c8d8" opacity="0.8"/>
+      <ellipse cx="58" cy="40" rx="18" ry="12" fill="#c0c8d8" opacity="0.8"/>
+      <ellipse cx="40" cy="58" rx="12" ry="18" fill="#c0c8d8" opacity="0.8"/>
+      <ellipse cx="22" cy="40" rx="18" ry="12" fill="#c0c8d8" opacity="0.8"/>
+      <circle cx="40" cy="40" r="10" fill="#b0b8cc"/>
+    </svg>
+  );
+}
+
 function App() {
   const [email, setEmail] = useState("example@gmail.com");
   const [password, setPassword] = useState("1234");
@@ -164,32 +194,45 @@ function App() {
 
   if (!auth) {
     return (
-      <main className="login-shell">
-        <section className="login-card">
-          <p className="eyebrow">QuickKart Support AI</p>
-          <h1>Operations Center Login</h1>
-          <p className="subtitle">Simulate real customer-support handling with OpenEnv step/reset/state loops.</p>
-          <form onSubmit={handleLogin} className="login-form">
-            <label>
-              Email
-              <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="example@gmail.com" />
-            </label>
-            <label>
-              Password
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="1234"
-              />
-            </label>
-            <button className="btn primary" type="submit" disabled={busy}>
-              {busy ? "Signing in..." : "Login"}
-            </button>
+      <div className="wrapper">
+        <div style={{ position: 'absolute', top: '30px', left: '40px', display: 'flex', flexDirection: 'column', gap: '8px', zIndex: 100, maxWidth: '380px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#2a3fc0" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <span style={{ color: '#2a3fc0', fontSize: '1.35rem', fontWeight: '800', letterSpacing: '0.2px' }}>
+              QuickKart <span style={{ fontWeight: '500', opacity: 0.85 }}>Operations Center</span>
+            </span>
+          </div>
+          <p style={{ color: 'rgba(30, 48, 140, 0.75)', fontSize: '0.88rem', lineHeight: '1.5', margin: 0, fontWeight: 500 }}>
+            Login to dashboard to ticket handling to grader result. Train agents on real support KPIs: response time, resolution speed, FCR, and CSAT.
+          </p>
+        </div>
+
+        <div className="shape-cube"><Cube /></div>
+        <div className="shape-capsule"><Capsule /></div>
+        <div className="shape-flower"><Flower /></div>
+
+        <div className="card" style={{ maxWidth: '400px' }}>
+          <form onSubmit={handleLogin} style={{ width: '100%' }}>
+            <div>
+              <h1 className="title">Log In</h1>
+              <p className="subtitle">Welcome back! Please enter your details.</p>
+              <div className="fields">
+                <input className="input-field" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email Address"/>
+                <input className="input-field" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password"/>
+
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+                  <button type="submit" className="btn-primary" disabled={busy} style={{ width: '60%' }}>
+                    {busy ? "Signing in..." : "Log In"}
+                  </button>
+                </div>
+              </div>
+              {authError && <p className="error-text" style={{marginTop: '1rem', color: '#ff4d4f', textAlign: 'center'}}>{authError}</p>}
+            </div>
           </form>
-          {authError && <p className="error-text">{authError}</p>}
-        </section>
-      </main>
+        </div>
+      </div>
     );
   }
 
